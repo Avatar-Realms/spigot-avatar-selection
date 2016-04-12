@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -73,47 +74,21 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    // Seems quite heavy, there must be a way to light it.
-    // Not really good, Saturday is not properly estimated.
-    // To change
-    private static short getCurrentWeek() {
-        Calendar now = new GregorianCalendar();
-        Calendar seek = new GregorianCalendar();
-        //Get the last saturday of previous month
-        int month = seek.get(Calendar.MONTH);
-        if (month == Calendar.JANUARY) {
-            month = Calendar.DECEMBER;
-        }
-        else {
-            month--;
-        }
-
-        seek.set(Calendar.MONTH, month);
-        int lastPossibleDate = seek.getActualMaximum(Calendar.DATE);
-        seek.set(Calendar.DATE, lastPossibleDate);
-        while (seek.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
-            seek.set(Calendar.DATE, --lastPossibleDate);
-        }
-
-        //The next day starts the first week of the next month
-        seek.set(Calendar.DATE, ++lastPossibleDate);
-        seek.set(Calendar.HOUR, 0);
-        seek.set(Calendar.MINUTE, 0);
-        seek.set(Calendar.SECOND, 0);
-
-        //Test each week
-        seek.add(Calendar.DATE, 7);
-        seek.add(Calendar.SECOND, -1);
-        if (now.before(seek)) {
-            return PlayerStat.FIRST_WEEK;
-        }
-        seek.add(Calendar.DATE, 7);
-        if (now.before(seek)){
-            return PlayerStat.SECOND_WEEK;
-        }
-        seek.add(Calendar.DATE, 7);
-        if (now.before(seek)) {
-            return PlayerStat.THIRD_WEEK;
+    private short getCurrentWeek() {
+        if (avatars.lastElection != null) {
+            LocalDate now = LocalDate.now();
+            LocalDate start = avatars.lastElection.plusDays(7);// The week after the avatar election
+            if (now.isBefore(start)) {
+                return PlayerStat.FIRST_WEEK;
+            }
+            start.plusDays(7);
+            if (now.isBefore(start)) {
+                return PlayerStat.SECOND_WEEK;
+            }
+            start.plusDays(7);
+            if (now.isBefore(start)) {
+                return PlayerStat.THIRD_WEEK;
+            }
         }
         return PlayerStat.FOURTH_WEEK;
     }
@@ -156,6 +131,8 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
         for (PlayerStat stat : stats.values()) {
             stat.resetMonth();
         }
+        avatars.lastElection = LocalDate.now();
+        saver.saveAvatarsData(avatars);
         sender.sendMessage(ChatColor.GREEN + "Month statistics reset");
     }
 
@@ -175,23 +152,25 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(ChatColor.DARK_RED + "Invalid element name.");
             return;
         }
+        List<Player> displayedList = new LinkedList<Player>();
         List<Player> players = new ArrayList<Player>();
 
         // Add all the players with that element to a list
         for (Player player : Bukkit.getOnlinePlayers()) {
-            BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-            if (bender == null) {
-                continue;
-            }
-            if (bender.isBender(element)) {
-                players.add(player);
-            }
-        }
-
-        // Remove all previous avatar from the list
-        for (Avatar avatar : this.avatars.avatars.values()) {
-            if (players.contains(avatar.getPlayer())) {
-                players.remove(avatar.getPlayer());
+            if (!avatars.avatars.values().contains(player)) {
+                BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+                if (bender == null) {
+                    continue;
+                }
+                if (bender.isBender(element)) {
+                    PlayerStat stat = this.stats.get(player.getUniqueId());
+                    if (stat != null) {
+                        displayedList.add(player);
+                        for (short i = 0; i < stat.getPresence(); i++) {
+                            players.add(player);
+                        }
+                    }
+                }
             }
         }
 
@@ -204,6 +183,8 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
             return;
         }
 
+        Collections.shuffle(displayedList);
+        Collections.shuffle(players);
         // Generate a random number between 0 and the amount of valid connected
         // players
         Random rand = new Random();
@@ -223,7 +204,7 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*12, 0));
         }
-        NewAvatarDisplayTask display = new NewAvatarDisplayTask(plugin, congrats, players);
+        NewAvatarDisplayTask display = new NewAvatarDisplayTask(plugin, congrats, displayedList);
         display.runTaskLaterAsynchronously(plugin, 20);
         sender.sendMessage(ChatColor.GREEN + "Election done. You now should use" + ChatColor.GOLD + " /avatar reset " + ChatColor.GREEN + "to reset month statistics.");
     }
