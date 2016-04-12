@@ -50,7 +50,72 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        //TODO count week
+        Player player = event.getPlayer();
+        PlayerStat stat = null;
+        boolean changed = false;
+        if (stats.containsKey(player.getUniqueId())) {
+            stat = stats.get(player.getUniqueId());
+        }
+        if (stat == null) {
+            stat = new PlayerStat(player);
+            stats.put(player.getUniqueId(), stat);
+            changed = true;
+        }
+
+        short currentWeek = getCurrentWeek();
+        if (!stat.isPresent(currentWeek)) {
+            stat.setPresence(currentWeek, true);
+            changed = true;
+        }
+
+        if (changed) {
+            saver.saveStats(stat);
+        }
+    }
+
+    // Seems quite heavy, there must be a way to light it.
+    // Not really good, Saturday is not properly estimated.
+    // To change
+    private static short getCurrentWeek() {
+        Calendar now = new GregorianCalendar();
+        Calendar seek = new GregorianCalendar();
+        //Get the last saturday of previous month
+        int month = seek.get(Calendar.MONTH);
+        if (month == Calendar.JANUARY) {
+            month = Calendar.DECEMBER;
+        }
+        else {
+            month--;
+        }
+
+        seek.set(Calendar.MONTH, month);
+        int lastPossibleDate = seek.getActualMaximum(Calendar.DATE);
+        seek.set(Calendar.DATE, lastPossibleDate);
+        while (seek.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
+            seek.set(Calendar.DATE, --lastPossibleDate);
+        }
+
+        //The next day starts the first week of the next month
+        seek.set(Calendar.DATE, ++lastPossibleDate);
+        seek.set(Calendar.HOUR, 0);
+        seek.set(Calendar.MINUTE, 0);
+        seek.set(Calendar.SECOND, 0);
+
+        //Test each week
+        seek.add(Calendar.DATE, 7);
+        seek.add(Calendar.SECOND, -1);
+        if (now.before(seek)) {
+            return PlayerStat.FIRST_WEEK;
+        }
+        seek.add(Calendar.DATE, 7);
+        if (now.before(seek)){
+            return PlayerStat.SECOND_WEEK;
+        }
+        seek.add(Calendar.DATE, 7);
+        if (now.before(seek)) {
+            return PlayerStat.THIRD_WEEK;
+        }
+        return PlayerStat.FOURTH_WEEK;
     }
 
     @Override
@@ -64,16 +129,34 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
         String subCommand = args.remove(0).toUpperCase();
         if (subCommand.equals("LIST")) {
             listAvatars(sender);
-        } else if (subCommand.equals("ADD")) {
+        }
+        else if (subCommand.equals("ADD")) {
             addAvatar(sender, args);
-        } else if (subCommand.equals("SET")) {
+        }
+        else if (subCommand.equals("SET")) {
             setAvatar(sender, args);
-        } else if (subCommand.equals("NEW")) {
+        }
+        else if (subCommand.equals("NEW")) {
             randomNewAvatar(sender, args);
-        } else {
+        }
+        else if (subCommand.equals("RESET")) {
+            resetMonth(sender, args);
+        }
+        else {
             printUsage(sender);
         }
         return true;
+    }
+
+    private void resetMonth(CommandSender sender, LinkedList<String> args) {
+        if (!sender.isOp()) {
+            sender.sendMessage(ChatColor.DARK_RED + "You must be an operator to execute that command.");
+            return;
+        }
+        for (PlayerStat stat : stats.values()) {
+            stat.resetMonth();
+        }
+        sender.sendMessage(ChatColor.GREEN + "Month statistics reset");
     }
 
     private void randomNewAvatar(CommandSender sender, LinkedList<String> args) {
@@ -142,6 +225,7 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
         }
         NewAvatarDisplayTask display = new NewAvatarDisplayTask(plugin, congrats, players);
         display.runTaskLaterAsynchronously(plugin, 20);
+        sender.sendMessage(ChatColor.GREEN + "Election done. You now should use" + ChatColor.GOLD + " /avatar reset " + ChatColor.GREEN + "to reset month statistics.");
     }
 
     @SuppressWarnings("deprecation")

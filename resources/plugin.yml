@@ -1,6 +1,6 @@
 name: AvatarSelection
 main: net.avatar.realms.spigot.avatar.selection.AvatarSelectionPlugin
-author: Nokorbis
+author: [Koudja, Noko]
 description: Plugin to automatize the avatar selection
 version: 1.0.0
 load: POSTWORLD
