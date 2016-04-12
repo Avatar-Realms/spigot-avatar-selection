@@ -81,11 +81,11 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener {
             if (now.isBefore(start)) {
                 return PlayerStat.FIRST_WEEK;
             }
-            start.plusDays(7);
+            start = start.plusDays(7);
             if (now.isBefore(start)) {
                 return PlayerStat.SECOND_WEEK;
             }
-            start.plusDays(7);
+            start = start.plusDays(7);
             if (now.isBefore(start)) {
                 return PlayerStat.THIRD_WEEK;
             }
