@@ -194,7 +194,7 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener, Event
 
         // Get the player matching this random number
         Player congrats = players.get(i);
-        String msg = "New Avatar : " + congrats.getName() + " (" + players.stream().filter((p) -> p == congrats).count() +")";
+        String msg = "New Avatar : " + congrats.getName() + " (" + players.stream().filter((p) -> p == congrats).count() +"/" + players.size() + ")";
 
         // Tell it first to staff
         for (Player player : Bukkit.getOnlinePlayers()) {

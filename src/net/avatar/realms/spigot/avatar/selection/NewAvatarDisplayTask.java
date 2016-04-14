@@ -61,8 +61,10 @@ public class NewAvatarDisplayTask extends BukkitRunnable {
         }
 
         String winner = color + newAvatar.getName() + " !";
+        String msg = ChatColor.GOLD + "Raava a choisi... " + winner;
         for (Player player : Bukkit.getOnlinePlayers()) {
             TitleAPI.sendTitle(player, 0, 100, 40, ChatColor.GOLD + "Raava a choisi...", winner);
+            player.sendMessage(msg);
         }
     }
 }
