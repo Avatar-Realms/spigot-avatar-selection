@@ -53,7 +53,6 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener, Event
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        plugin.getLogger().info("Handling player logging event for avatar selection");
         Player player = event.getPlayer();
         PlayerStat stat = null;
         boolean changed = false;
@@ -169,7 +168,7 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener, Event
                     PlayerStat stat = this.stats.get(player.getUniqueId());
                     if (stat != null) {
                         displayedList.add(player);
-                        for (short i = 0; i < stat.getPresence(); i++) {
+                        for (short i = 0; i < stat.getPresenceFactor(); i++) {
                             players.add(player);
                         }
                     }

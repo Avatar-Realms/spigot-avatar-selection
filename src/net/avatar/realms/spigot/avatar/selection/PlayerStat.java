@@ -46,11 +46,12 @@ public class PlayerStat {
 
     public void setPresence(short week, boolean present) {
         if (present) {
-            presence &= week;
+            presence |= week;
         }
         else {
             presence &= ~week;
         }
+        System.out.println("New player presence : "+ presence);
     }
 
     public short getPresenceFactor() {

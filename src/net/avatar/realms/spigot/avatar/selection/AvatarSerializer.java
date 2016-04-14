@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class AvatarSerializer implements JsonSerializer<AvatarsData>, JsonDeseri
 			BendingElement element = BendingElement.getType(av.get(2).getAsString());
 			OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 			if (p == null) {
-				System.err.println("--------------------WAHTADOCJZFZE");
+				System.err.println("--------------------Null offline player was getting when loading avatars");
 			}
 			Avatar avatar = new Avatar();
 			avatar.setPosition(position);
@@ -37,6 +38,14 @@ public class AvatarSerializer implements JsonSerializer<AvatarsData>, JsonDeseri
 		}
 		int currentPosition = root.get(1).getAsInt();
 		data.currentAvatar = data.avatars.get(currentPosition);
+		if (root.size() > 2) {
+			JsonElement tmp = root.get(2);
+			if (tmp != null) {
+				data.lastElection = LocalDate.parse(tmp.getAsString());
+			}
+		}
+
+
 		return data;
 	}
 
@@ -60,6 +69,8 @@ public class AvatarSerializer implements JsonSerializer<AvatarsData>, JsonDeseri
 		}
 		root.add(current);
 
+		JsonPrimitive last = new JsonPrimitive(data.lastElection.toString());
+		root.add(last);
 		return root;
 	}
 
