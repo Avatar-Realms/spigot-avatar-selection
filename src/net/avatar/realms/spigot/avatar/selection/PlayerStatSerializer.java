@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.avatar.selection;
 
 import com.google.gson.*;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Type;
@@ -13,11 +14,11 @@ import java.util.UUID;
 public class PlayerStatSerializer implements JsonSerializer<PlayerStat>, JsonDeserializer<PlayerStat>{
     @Override
     public PlayerStat deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        Player player = null;
+        OfflinePlayer player = null;
         JsonObject root = (JsonObject) jsonElement;
         String str = root.get("uuid").getAsString();
         UUID id = UUID.fromString(str);
-        player = Bukkit.getPlayer(id);
+        player = Bukkit.getOfflinePlayer(id);
         PlayerStat stat = new PlayerStat(player);
         short pres = root.get("presence").getAsShort();
         stat.setPresence(pres, true);

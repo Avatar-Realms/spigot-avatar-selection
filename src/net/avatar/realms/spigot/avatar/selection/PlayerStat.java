@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.avatar.selection;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -15,7 +16,7 @@ public class PlayerStat {
     /**
      *  Reference to the player whose belong these stats
      */
-    private Player player;
+    private OfflinePlayer player;
 
     /**
      *  Connexions of the player during this month
@@ -26,7 +27,7 @@ public class PlayerStat {
         this.presence = 0;
     }
 
-    public PlayerStat(Player player) {
+    public PlayerStat(OfflinePlayer player) {
         this();
         this.player = player;
     }
@@ -35,7 +36,7 @@ public class PlayerStat {
         this.player = player;
     }
 
-    public Player getPlayer() {
+    public OfflinePlayer getPlayer() {
         return player;
     }
 
