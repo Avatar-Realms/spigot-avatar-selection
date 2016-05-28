@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.avatar.selection;
+package net.bendercraft.spigot.avatar.selection;
 
 
 import net.bendercraft.spigot.bending.abilities.BendingElement;

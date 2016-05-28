@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.avatar.selection;
+package net.bendercraft.spigot.avatar.selection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
