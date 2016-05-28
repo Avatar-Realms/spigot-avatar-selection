@@ -1,10 +1,10 @@
 package net.avatar.realms.spigot.avatar.selection;
 
 
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.utils.PluginTools;
+import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPlayer;
+import net.bendercraft.spigot.bending.controller.Settings;
+import net.bendercraft.spigot.bending.utils.PluginTools;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

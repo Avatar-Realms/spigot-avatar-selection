@@ -1,7 +1,7 @@
 package net.avatar.realms.spigot.avatar.selection;
 
 import com.google.gson.*;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingElement;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 

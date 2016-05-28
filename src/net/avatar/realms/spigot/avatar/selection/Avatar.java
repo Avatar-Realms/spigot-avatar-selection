@@ -1,6 +1,6 @@
 package net.avatar.realms.spigot.avatar.selection;
 
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingElement;
 import org.bukkit.OfflinePlayer;
 
 /**
