@@ -38,7 +38,7 @@ public class Saver {
             return Collections.emptyList();
         }
         File folder = getStatsFolder();
-        Collection<PlayerStat> stats = new LinkedList<PlayerStat>();
+        Collection<PlayerStat> stats = new LinkedList<>();
 
         for (File file : folder.listFiles(filter)) {
             PlayerStat playerStat = loadStats(file);

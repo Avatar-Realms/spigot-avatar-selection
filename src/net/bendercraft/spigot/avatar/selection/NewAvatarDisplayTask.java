@@ -1,6 +1,5 @@
 package net.bendercraft.spigot.avatar.selection;
 
-import com.connorlinfoot.titleapi.TitleAPI;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.utils.PluginTools;
@@ -28,7 +27,7 @@ public class NewAvatarDisplayTask extends BukkitRunnable {
     @Override
     public void run() {
         // Tell it to everyone !
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(64);
         sb.append(ChatColor.GOLD + "[Avatar] " + ChatColor.RESET + "Raava se tourne vers : ");
         BendingPlayer bender = BendingPlayer.getBendingPlayer(players.get(0));
         ChatColor color = PluginTools.getColor(Settings.getColor(bender.getBendingTypes().get(0)));
@@ -51,19 +50,19 @@ public class NewAvatarDisplayTask extends BukkitRunnable {
             j = (j < size-1)? j+1 : 0;
             String potential = color + players.get(j).getName();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                TitleAPI.sendTitle(player, 0, 5, 3, inspection, potential);
+                player.sendTitle(inspection, potential, 0, 5, 3);
             }
             try {
                 Thread.sleep(250);
             }
-            catch (InterruptedException e) {
+            catch (InterruptedException ignored) {
             }
         }
 
         String winner = color + newAvatar.getName() + " !";
         String msg = ChatColor.GOLD + "Raava a choisi... " + winner;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            TitleAPI.sendTitle(player, 0, 100, 40, ChatColor.GOLD + "Raava a choisi...", winner);
+            player.sendTitle(ChatColor.GOLD + "Raava a choisi...", winner, 0, 100, 40);
             player.sendMessage(msg);
         }
     }

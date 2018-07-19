@@ -13,7 +13,7 @@ import java.util.UUID;
 public class PlayerStatSerializer implements JsonSerializer<PlayerStat>, JsonDeserializer<PlayerStat>{
     @Override
     public PlayerStat deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        OfflinePlayer player = null;
+        OfflinePlayer player;
         JsonObject root = (JsonObject) jsonElement;
         String str = root.get("uuid").getAsString();
         UUID id = UUID.fromString(str);

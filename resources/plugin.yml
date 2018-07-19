@@ -2,7 +2,9 @@ name: AvatarSelection
 main: net.bendercraft.spigot.avatar.selection.AvatarSelectionPlugin
 author: [Koudja, Noko]
 description: Plugin to automatize the avatar selection
-version: 1.0.0
+depend: [Bending]
+version: 1.5.0
+api-version: 1.13
 load: POSTWORLD
 commands:
    avatar:

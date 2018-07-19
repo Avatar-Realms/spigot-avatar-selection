@@ -35,7 +35,7 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener, Event
     @Override
     public void onEnable() {
         plugin = this;
-        stats = new HashMap<UUID, PlayerStat>();
+        stats = new HashMap<>();
         this.saver = new Saver(this);
         avatars = saver.loadAvatarsData();
         for (PlayerStat stat : saver.loadAllStats()) {
@@ -98,7 +98,7 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener, Event
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] argArray) {
 
-        LinkedList<String> args = new LinkedList<String>(Arrays.asList(argArray));
+        LinkedList<String> args = new LinkedList<>(Arrays.asList(argArray));
         if (args.isEmpty()) {
             sender.sendMessage(ChatColor.DARK_RED + "You must send parameters with this command.");
             return true;
@@ -154,12 +154,12 @@ public class AvatarSelectionPlugin extends JavaPlugin implements Listener, Event
             sender.sendMessage(ChatColor.DARK_RED + "Invalid element name.");
             return;
         }
-        List<Player> displayedList = new LinkedList<Player>();
-        List<Player> players = new ArrayList<Player>();
+        List<Player> displayedList = new LinkedList<>();
+        List<Player> players = new ArrayList<>();
 
         // Add all the players with that element to a list
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!avatars.avatars.values().contains(player)) {
+            if (!avatars.hasPlayerAlreadyBeenAvatar(player)) {
                 BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
                 if (bender == null) {
                     continue;
